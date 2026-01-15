@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 26
-  productGUID: 0043ec9147f68c09ca84741c45a48c12
+  productGUID: b051debec970499deb1e0f7c63503878
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: RandomTowerDefence
+  productName: RandomTowerDefence_
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -866,14 +866,14 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: RandomTowerDefence
+  metroPackageName: RandomTowerDefence_
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: RandomTowerDefence
+  metroApplicationDescription: RandomTowerDefence_
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -943,10 +943,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 71393b94-14a5-428c-ac2b-397cd7e88b43
+  cloudProjectId: 8f641208-ac4d-4592-8657-692e367f8bd3
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: RandomTowerDefence 2026-01-15_13-31-40
+  projectName: RandomTowerDefence_
   organizationId: sung96
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
