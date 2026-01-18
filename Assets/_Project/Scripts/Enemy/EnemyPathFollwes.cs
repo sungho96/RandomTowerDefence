@@ -28,6 +28,17 @@ public class EnemyPathFollwes : MonoBehaviour
     {
         fixedY = transform.position.y;
     }
+
+    public void Init(WayPointPath newpath)
+    {
+        path = newpath;
+        currentIndex = 0;
+
+        if (lockY)
+            fixedY = transform.position.y;
+
+        enabled = (path != null && path.Points != null && path.Points.Count > 0);
+    }
     private void Start()
     {
         if(path == null)
