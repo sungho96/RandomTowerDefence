@@ -100,19 +100,25 @@ public class EnemyPathFollwes : MonoBehaviour
 
     private void AdvanceIndex()
     {
-        int last = path.Points.Count - 1;   
+        int last = path.Points.Count - 1;
 
         if (currentIndex >= last)
         {
             if (loop)
                 currentIndex = 0;
             else
-                enabled = false;
+            {
+                if (GameState.Instance != null)
+                    GameState.Instance.LossLife(1);
+                    
+                gameObject.SetActive(false);
+            }
         }
         else
         {
             currentIndex++;
         }
+
     }
     [ContextMenu("Snap to Current WayPoint")]
     private void SnapToCurrentWaypoint()
