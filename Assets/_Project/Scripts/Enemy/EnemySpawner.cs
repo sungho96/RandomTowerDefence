@@ -10,7 +10,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform enemiesParent;
 
     [Header("Enemy Prefab (mush have EnemyPathFollower")]
-    [SerializeField] private EnemyPathFollwes enemyPrefab;
+    [SerializeField] private EnemyPathFollowes enemyPrefab;
 
     [Header("Wave Test")]
     [SerializeField] private int spawnCount = 5;
@@ -51,7 +51,7 @@ public class EnemySpawner : MonoBehaviour
     [ContextMenu("Spawn one")]
     public void SpawnOne()
     {
-        EnemyPathFollwes enemy = Instantiate(
+        EnemyPathFollowes enemy = Instantiate(
             enemyPrefab,
             spawnPoint.position,
             spawnPoint.rotation,

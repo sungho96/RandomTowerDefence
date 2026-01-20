@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyPathFollwes : MonoBehaviour
+public class EnemyPathFollowes : MonoBehaviour
 {
     [Header("Reference")]
     [SerializeField] private WayPointPath path;
