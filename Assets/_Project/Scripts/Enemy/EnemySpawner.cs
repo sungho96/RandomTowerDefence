@@ -60,5 +60,24 @@ public class EnemySpawner : MonoBehaviour
         enemy.Init(path);
         enemy.gameObject.SetActive(true);
     }
+
+    public IEnumerator SpawnWave(int count, float interval)
+    {
+        if (path == null || spawnPoint == null || enemyPrefab == null)
+        {
+            Debug.LogError("[EnemySpawner] Mssing refs : path/spawnPoint/enemyprefab", this);
+            yield break;
+        }
+        
+        for (int i=0; i< count; i++)
+        {
+            if (GameState.Instance != null && GameState.Instance.IsGameOver)
+                yield break;
+
+            SpawnOne();
+            yield return new WaitForSeconds(interval);
+        }
+        
+    }
 }
 
