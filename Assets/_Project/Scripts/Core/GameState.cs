@@ -34,7 +34,7 @@ public class GameState : MonoBehaviour
     {
         if (IsGameOver) return;
 
-        lives = Mathf.Max(0, lives - amount);
+        lives = Mathf.Max(0, lives - amount); //0미만 방어코드
         Debug.Log($"[GameStat] Lives : {lives}/{maxLives}");
 
         if (IsGameOver)
@@ -46,7 +46,7 @@ public class GameState : MonoBehaviour
         Debug.Log("[GameState] Game over");
 
         if (pauseGameover)
-            Time.timeScale = 0f;
+            Time.timeScale = 0f; //일시정지
 
         OnGameOver?.Invoke();
       

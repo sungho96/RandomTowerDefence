@@ -9,17 +9,20 @@ public class WayPointPath : MonoBehaviour
 
     public IReadOnlyList<Transform> Points => points;
 
-    [SerializeField] private float gizmoYOffset = 0.05f;
+    [SerializeField] private float gizmoYOffset = 0.05f; //z-fighting 발생하여 pos.y 값보정
 
     private void Awake()
     {
-        if (points == null || points.Count == 0)
+        if (points == null || points.Count == 0) //Waypoint가 등록이 안되어있을때 자동 수집기능 
             CollectFromChildren();
     }
-    private void OnValidate()
+    private void OnValidate() //값이 변경시 자동호출하여 방어코드 구현
     {
         CollectFromChildren();
     }
+    /// <summary>
+    /// 시작시 리스트 초기화 인덱스 순서에맞게 waypoint를 List에 추가
+    /// </summary>
     [ContextMenu("Collect From Children")]
     public void CollectFromChildren()
     {
@@ -32,7 +35,9 @@ public class WayPointPath : MonoBehaviour
                     points.Add(child);
         }
     }
-
+    /// <summary>
+    /// 에디터 모드일때 Waypoint의 위치와 추후에 움직이는 노선을 알기 위해 사용함.
+    /// </summary>
     private void OnDrawGizmos()
     {
         if (points == null || points.Count < 2) return;
