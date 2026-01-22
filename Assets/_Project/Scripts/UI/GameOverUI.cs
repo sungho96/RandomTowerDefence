@@ -90,7 +90,7 @@ public class GameOverUI : MonoBehaviour
 #if UNITY_EDITOR
         Debug.Log("[Gameover UI] Exit clicked (editor)");
 #else
-        Applcation.Quit();
+        Application.Quit();
 #endif
     }
 }
