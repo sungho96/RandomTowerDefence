@@ -40,14 +40,7 @@ public class GameState : MonoBehaviour
         if (IsGameOver)
             TriggerGameOver();
     }
-
-    [ContextMenu("Reset Lives")]
-    public void ResetLives()
-    {
-        lives = maxLives;
-        Debug.Log($"[GameState] Lives rest : {lives}/{maxLives}");
-    }
-
+    
     private void TriggerGameOver()
     {
         Debug.Log("[GameState] Game over");

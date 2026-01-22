@@ -6,7 +6,13 @@ using UnityEngine.UI;
 
 public class LIvesUI : MonoBehaviour
 {
-    [SerializeField] private TMP_Text livesText;
+    [SerializeField] private TextMeshProUGUI livesText;
+
+    private void Reset()
+    {
+        livesText = GetComponent<TextMeshProUGUI>();
+    }
+
 
     private void Update()
     {
