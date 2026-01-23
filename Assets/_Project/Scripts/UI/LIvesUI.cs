@@ -16,6 +16,7 @@ public class LIvesUI : MonoBehaviour
 
     private void Update()
     {
+        //GameState에있는 lives데이터를 가져와 화면에 표시
         if (GameState.Instance == null) return;
         livesText.text =  $"Lives: {GameState.Instance.Lives}"; 
     }

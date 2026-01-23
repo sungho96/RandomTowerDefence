@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-
+//웨이브(GameState)를 가져오는 UI스크립트
 public class WaveTextUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI waveText;
