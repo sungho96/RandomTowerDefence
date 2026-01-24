@@ -2110,7 +2110,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7852120778752418853, guid: 50071493cec534d4a8f49027943b8007, type: 3}
       propertyPath: range
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7852120778752418853, guid: 50071493cec534d4a8f49027943b8007, type: 3}
       propertyPath: muzzle
@@ -2402,6 +2402,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1766460744}
     m_Modifications:
+    - target: {fileID: 418539002697026440, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
+      propertyPath: maxHp
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1719403918086456008, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
       propertyPath: m_Name
       value: Ceratosaurus_5 1 1

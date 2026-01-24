@@ -11,6 +11,7 @@ public class TowerShooter : MonoBehaviour
     [Header("Attack Seetings")]
     [SerializeField] private float range = 2.0f; //공격범위
     [SerializeField] private float hitInterval = 0.8f;
+    [SerializeField] private int damage = 1;
 
     [Header("Optional")]
     [SerializeField] private Transform muzzle; 
@@ -41,6 +42,13 @@ public class TowerShooter : MonoBehaviour
             nextHitTime = Time.time + hitInterval;
 
             string from = (muzzle != null) ? muzzle.name : gameObject.name;
+
+            EnemyHealth hp = target.GetComponent<EnemyHealth>();
+            if (hp != null)
+                hp.TakeDamage(damage);
+            else
+                Debug.LogWarning($"[TowerShooter] EnemyHealth not found on{target.name}");
+
             Debug.Log($"[TowerShooter] hit ({from} -> {target.name})");
         }
 

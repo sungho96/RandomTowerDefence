@@ -72,6 +72,7 @@ public class EnemySpawner : MonoBehaviour
         enemy.Init(path);//waypoint.cs, transform.y 값 보정작업
         enemy.gameObject.SetActive(true);
     }
+
     /// <summary>
     /// Count= 몇마리의 적을 생성 수 
     /// interval= 연속으로 생성시 얼마의 텀을 줄지 시간(sec)
