@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//FSM
 public class TowerShooter : MonoBehaviour
 {
     [Header("Target Source")]
@@ -17,6 +17,14 @@ public class TowerShooter : MonoBehaviour
     [SerializeField] private Transform muzzle; 
     [SerializeField] private bool rotateToTarget = true;
 
+    [Header("FSM / Anim Controller")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private RuntimeAnimatorController idleController;
+    [SerializeField] private RuntimeAnimatorController attackController;
+
+    private enum TowerState { Idle, Attack}
+    private TowerState state = TowerState.Idle;
+
     private float nextHitTime = 0f;
 
     private void Update()
@@ -27,7 +35,12 @@ public class TowerShooter : MonoBehaviour
         if (enemiesparent == null) return;
 
         Transform target = FindNearestEnemyInRange();//근처 적 탐색
-        if (target == null) return;
+
+        // target이 null이면 Idle로 돌리고 return
+        if (target == null) { SetState(TowerState.Idle); return; }
+
+        //target이 있으면 Attack 상태
+        SetState(TowerState.Attack);
 
         // y축고정한 상태로 타켓을 바라보도록 회전
         if (rotateToTarget)
@@ -93,6 +106,24 @@ public class TowerShooter : MonoBehaviour
         }
         return best;
     }
+
+
+    private void SetState(TowerState next)
+    {
+        if (state == next) return;
+        state = next;
+
+        if (animator == null) return;
+
+        RuntimeAnimatorController targetController =
+            (state == TowerState.Attack) ? attackController : idleController;
+
+        if (targetController != null && animator.runtimeAnimatorController != targetController)
+            animator.runtimeAnimatorController = targetController;
+
+        Debug.Log($"[TowerShooter] state -> {state}");
+    }
+
     /// <summary>
     /// 에디터모드에서 공격범위 육안으로 확인
     /// </summary>
