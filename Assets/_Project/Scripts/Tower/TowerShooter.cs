@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Video;
 //FSM
 public class TowerShooter : MonoBehaviour
 {
@@ -17,12 +19,19 @@ public class TowerShooter : MonoBehaviour
     [SerializeField] private Transform muzzle; 
     [SerializeField] private bool rotateToTarget = true;
 
+    //FSM 활용 
     [Header("FSM / Anim Controller")]
     [SerializeField] private Animator animator;
     [SerializeField] private RuntimeAnimatorController idleController;
     [SerializeField] private RuntimeAnimatorController attackController;
 
-    private enum TowerState { Idle, Attack}
+    [Header("VFX")]
+    [SerializeField] private GameObject hitFxPrefab;
+    [SerializeField] private float hitFxLifeTime = 1.5f;
+    [SerializeField] private float hitFxYOffset = 1.0f;
+
+
+    private enum TowerState { Idle, Attack }
     private TowerState state = TowerState.Idle;
 
     private float nextHitTime = 0f;
@@ -58,7 +67,21 @@ public class TowerShooter : MonoBehaviour
 
             EnemyHealth hp = target.GetComponent<EnemyHealth>();
             if (hp != null)
+            {
                 hp.TakeDamage(damage);
+                Vector3 fxPos = target.position + Vector3.up * hitFxYOffset;
+
+                Quaternion fxRot = Quaternion.identity;
+
+                Vector3 dir = (target.position - transform.position);
+                dir.y = -30f;
+
+                if (dir.sqrMagnitude > 0.001f)
+                fxRot = Quaternion.LookRotation(dir.normalized);
+
+                GameObject fx = Instantiate(hitFxPrefab, fxPos, fxRot);
+                Destroy(fx, hitFxLifeTime);
+            }
             else
                 Debug.LogWarning($"[TowerShooter] EnemyHealth not found on{target.name}");
 
@@ -108,6 +131,13 @@ public class TowerShooter : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// FSM 상태 전환 함수
+    /// - 상태가 바뀔 때만 실행
+    /// - Animator가 있으면, 상태에 맞는 RuntimeAnimatorController(idle/attack)를 '교체'해서 재생 흐름을 바꾼다.
+    /// - 같은 컨트롤러를 반복 대입하지 않도록 비교 후 변경한다.
+    /// </summary>
+    /// <param name="next"></param>
     private void SetState(TowerState next)
     {
         if (state == next) return;
@@ -118,7 +148,7 @@ public class TowerShooter : MonoBehaviour
         RuntimeAnimatorController targetController =
             (state == TowerState.Attack) ? attackController : idleController;
 
-        if (targetController != null && animator.runtimeAnimatorController != targetController)
+        if (targetController != null && animator.runtimeAnimatorController != targetController)//현재 Animator가 사용 중인 컨트롤러(상태머신/클립 묶음)
             animator.runtimeAnimatorController = targetController;
 
         Debug.Log($"[TowerShooter] state -> {state}");

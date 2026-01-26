@@ -2070,7 +2070,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4029118476852958, guid: 50071493cec534d4a8f49027943b8007, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.49
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 4029118476852958, guid: 50071493cec534d4a8f49027943b8007, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2108,26 +2108,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 95916916344939792, guid: 50071493cec534d4a8f49027943b8007, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 2eaf0ba94d77ec8469faf41bf282c7a8, type: 2}
     - target: {fileID: 7852120778752418853, guid: 50071493cec534d4a8f49027943b8007, type: 3}
       propertyPath: range
-      value: 1.5
+      value: 1.6
       objectReference: {fileID: 0}
-    - target: {fileID: 7852120778752418853, guid: 50071493cec534d4a8f49027943b8007, type: 3}
-      propertyPath: muzzle
-      value: 
-      objectReference: {fileID: 754842029}
     - target: {fileID: 7852120778752418853, guid: 50071493cec534d4a8f49027943b8007, type: 3}
       propertyPath: enemiesparent
       value: 
       objectReference: {fileID: 1766460744}
-    - target: {fileID: 7852120778752418853, guid: 50071493cec534d4a8f49027943b8007, type: 3}
-      propertyPath: attackController
-      value: 
-      objectReference: {fileID: 9100000, guid: 6a96e943b34eabf4aa4acfe3bee87cf6, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2429,6 +2417,18 @@ PrefabInstance:
     - target: {fileID: 3769198873000203787, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
       propertyPath: moveSpeed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5795886401665047710, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5795886401665047710, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5795886401665047710, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5795886401665047710, guid: 75dc06c7b213acb19be84698d7dd427b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4551,11 +4551,6 @@ MonoBehaviour:
   centered: 0
   isPreset: 1
   latestTabIndex: 0
---- !u!4 &754842029 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3779048187793629841, guid: 50071493cec534d4a8f49027943b8007, type: 3}
-  m_PrefabInstance: {fileID: 368470773}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &777549858
 PrefabInstance:
   m_ObjectHideFlags: 0
