@@ -11,7 +11,7 @@ public class TowerShooter : MonoBehaviour
     [SerializeField] private Transform enemiesparent;
 
     [Header("Attack Seetings")]
-    [SerializeField] private float range = 2.0f; //공격범위
+    [SerializeField] private float range = 2.0f; //???????
     [SerializeField] private float hitInterval = 0.8f;
     [SerializeField] private int damage = 1;
 
@@ -19,7 +19,7 @@ public class TowerShooter : MonoBehaviour
     [SerializeField] private Transform muzzle; 
     [SerializeField] private bool rotateToTarget = true;
 
-    //FSM 활용 
+    //FSM ??? 
     [Header("FSM / Anim Controller")]
     [SerializeField] private Animator animator;
     [SerializeField] private RuntimeAnimatorController idleController;
@@ -30,6 +30,11 @@ public class TowerShooter : MonoBehaviour
     [SerializeField] private float hitFxLifeTime = 1.5f;
     [SerializeField] private float hitFxYOffset = 1.0f;
 
+    [Header("SFX")]
+    [SerializeField] private AudioSource hitAudiSource;
+    [SerializeField] private AudioClip hitSfx;
+    [SerializeField, Range(0f, 1f)] private float hitSfxVolume = 0.8f;
+    
 
     private enum TowerState { Idle, Attack }
     private TowerState state = TowerState.Idle;
@@ -38,27 +43,27 @@ public class TowerShooter : MonoBehaviour
 
     private void Update()
     {
-        // GameOver/일시정지(timeScale=0)일 때 자동 방어 코드
+        // GameOver/???????(timeScale=0)?? ?? ??? ??? ???
         if (GameState.Instance != null && GameState.Instance.IsGameOver) return;
         if (Time.timeScale == 0f) return;
         if (enemiesparent == null) return;
 
-        Transform target = FindNearestEnemyInRange();//근처 적 탐색
+        Transform target = FindNearestEnemyInRange();//??? ?? ???
 
-        // target이 null이면 Idle로 돌리고 return
+        // target?? null??? Idle?? ?????? return
         if (target == null) { SetState(TowerState.Idle); return; }
 
-        //target이 있으면 Attack 상태
+        //target?? ?????? Attack ????
         SetState(TowerState.Attack);
 
-        // y축고정한 상태로 타켓을 바라보도록 회전
+        // y??????? ???占쏙옙? ????? ?????? ???
         if (rotateToTarget)
         {
             Vector3 lookpos = target.position;
             lookpos.y = transform.position.y;
             transform.LookAt(lookpos);
         }
-        //일정간격마다 히트처리
+        //??????????? ??????
         if (Time.time >= nextHitTime)
         {
             nextHitTime = Time.time + hitInterval;
@@ -69,18 +74,33 @@ public class TowerShooter : MonoBehaviour
             if (hp != null)
             {
                 hp.TakeDamage(damage);
-                Vector3 fxPos = target.position + Vector3.up * hitFxYOffset;
+                if (hitFxPrefab != null)
+                {
+                    Vector3 fxPos = target.position + Vector3.up * hitFxYOffset;
 
-                Quaternion fxRot = Quaternion.identity;
+                    Quaternion fxRot = Quaternion.identity;
 
-                Vector3 dir = (target.position - transform.position);
-                dir.y = -30f;
+                    Vector3 dir = (target.position - transform.position);
+                    dir.y = -30f;
 
-                if (dir.sqrMagnitude > 0.001f)
-                fxRot = Quaternion.LookRotation(dir.normalized);
+                    if (dir.sqrMagnitude > 0.001f)
+                        fxRot = Quaternion.LookRotation(dir.normalized);
 
-                GameObject fx = Instantiate(hitFxPrefab, fxPos, fxRot);
-                Destroy(fx, hitFxLifeTime);
+                    GameObject fx = Instantiate(hitFxPrefab, fxPos, fxRot);
+                    Destroy(fx, hitFxLifeTime);
+                }
+                if (hitSfx != null)
+                {
+                    if (hitAudiSource != null)
+                    {
+                        hitAudiSource.PlayOneShot(hitSfx, hitSfxVolume);
+                    }
+                    else
+                    {
+                        Vector3 sfxPos = (muzzle != null) ? muzzle.position : transform.position;
+                        AudioSource.PlayClipAtPoint(hitSfx, sfxPos, hitSfxVolume);
+                    } 
+                }
             }
             else
                 Debug.LogWarning($"[TowerShooter] EnemyHealth not found on{target.name}");
@@ -90,17 +110,17 @@ public class TowerShooter : MonoBehaviour
 
     }
     /// <summary>
-    /// 적부모(enemiesparent)의 자식들중 
-    /// 활성상태이며
-    /// EnemyPathFollowes 컴포넌트를 가진 적이며
-    /// 사거리안에 있는 대사중 
-    /// 가장가까운 적 공격
-    /// 공격 기준점은 muzzle 있으면 muzzle 아니면 tower
+    /// ???占쏙옙?(enemiesparent)?? ?????? 
+    /// ??????????
+    /// EnemyPathFollowes ????????? ???? ?????
+    /// ??????? ??? ????? 
+    /// ??????? ?? ????
+    /// ???? ???????? muzzle ?????? muzzle ???? tower
     /// </summary>
     /// <returns></returns>
     private Transform FindNearestEnemyInRange()
     {
-        float rangeSqr = range * range; //sqrt(cpu)연상량 때문에 일부러사용
+        float rangeSqr = range * range; //sqrt(cpu)???? ?????? ??占쏙옙????
         Transform best = null;
         float bestDisSqr = float.MaxValue;
 
@@ -109,18 +129,18 @@ public class TowerShooter : MonoBehaviour
         for (int i=0; i < enemiesparent.childCount; i++)
         {
             Transform t = enemiesparent.GetChild(i);
-            if (!t.gameObject.activeInHierarchy) continue;//꺼진 오브젝트는 제외 
+            if (!t.gameObject.activeInHierarchy) continue;//???? ????????? ???? 
 
-            // 적이 EnemyPathFollowes를 가진 오브젝트(또는 자식)라도 잡히게 최소 보정
-            EnemyPathFollowes follower = t.GetComponentInChildren<EnemyPathFollowes>();//이게있어야하는가? 이미 안에있으면있을텐데
+            // ???? EnemyPathFollowes?? ???? ???????(??? ???)?? ?????? ??? ????
+            EnemyPathFollowes follower = t.GetComponentInChildren<EnemyPathFollowes>();//?????????占쏙옙?? ??? ????????????????
             if (follower == null) continue;
 
             Transform enemyRoot = follower.transform;
 
-            //orgin으로 부터 거리^2
+            //orgin???? ???? ???^2
             float dSqr = (enemyRoot.position - origin).sqrMagnitude;
 
-            //사거리 안에있고 더가까우면 갱신
+            //???? ?????? ???????? ????
             if (dSqr <= rangeSqr && dSqr < bestDisSqr)
             {
                 bestDisSqr = dSqr;
@@ -132,10 +152,10 @@ public class TowerShooter : MonoBehaviour
 
 
     /// <summary>
-    /// FSM 상태 전환 함수
-    /// - 상태가 바뀔 때만 실행
-    /// - Animator가 있으면, 상태에 맞는 RuntimeAnimatorController(idle/attack)를 '교체'해서 재생 흐름을 바꾼다.
-    /// - 같은 컨트롤러를 반복 대입하지 않도록 비교 후 변경한다.
+    /// FSM ???? ??? ???
+    /// - ???占쏙옙? ??? ???? ????
+    /// - Animator?? ??????, ???占쏙옙? ?占쏙옙? RuntimeAnimatorController(idle/attack)?? '???'??? ??? ???? ????.
+    /// - ???? ???????? ??? ???????? ????? ?? ?? ???????.
     /// </summary>
     /// <param name="next"></param>
     private void SetState(TowerState next)
@@ -148,14 +168,14 @@ public class TowerShooter : MonoBehaviour
         RuntimeAnimatorController targetController =
             (state == TowerState.Attack) ? attackController : idleController;
 
-        if (targetController != null && animator.runtimeAnimatorController != targetController)//현재 Animator가 사용 중인 컨트롤러(상태머신/클립 묶음)
+        if (targetController != null && animator.runtimeAnimatorController != targetController)//???? Animator?? ??? ???? ??????(???占쏙옙??/??? ????)
             animator.runtimeAnimatorController = targetController;
 
         Debug.Log($"[TowerShooter] state -> {state}");
     }
 
     /// <summary>
-    /// 에디터모드에서 공격범위 육안으로 확인
+    /// ?????????? ??????? ???????? ???
     /// </summary>
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

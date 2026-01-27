@@ -1,31 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//ÄÝ¶óÀÌ´õ
+using TMPro;
+//ï¿½Ý¶ï¿½ï¿½Ì´ï¿½
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHp = 10;
     [SerializeField] private int currentHp;
 
-    [Header("Death FX")]
+    [Header("Death VFX")]
     [SerializeField] private float deathDuration = 0.45f;
     [SerializeField] private float tiltAngle = 85f;
     [SerializeField] private float ShrinkScale = 0.5f;
     [SerializeField] private bool disableMoveMentOnDeath = true;
 
+    [Header("Death SFX")]
+    [SerializeField] private AudioSource DeathAudioSource;
+    [SerializeField] private AudioClip DeathSfx;
+    [SerializeField, Range(0f, 1f)] private float DeathSoundVolume = 0.5f;
+
+    [Header("HP UI")]
+    [SerializeField] private TextMeshPro hpText;
+
     private bool isDying = false;
-    public int CurrentHp => currentHp; //Ä¸½¶È­
+    public int CurrentHp => currentHp; //Ä¸ï¿½ï¿½È­
 
     private void Awake()
     {
         currentHp = maxHp;
+        UpdateHpText();
     }
 
     /// <summary>
-    /// amount = ¹ÞÀ»µ¥¹ÌÁö
-    /// Á×´Â Áß & ÇöÀçÃ¼·Â 0ÀÌÇÏ¸é return;
-    /// current´Â 0ÀÌÇÏ·Î ¾È¶³¾îÁö°Ô²û Á¶Á¤
-    /// current=0 ÀÌ¸é Die() È£Ãâ
+    /// amount = ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½×´ï¿½ ï¿½ï¿½ & ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ 0ï¿½ï¿½ï¿½Ï¸ï¿½ return;
+    /// currentï¿½ï¿½ 0ï¿½ï¿½ï¿½Ï·ï¿½ ï¿½È¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ ï¿½ï¿½ï¿½ï¿½
+    /// current=0 ï¿½Ì¸ï¿½ Die() È£ï¿½ï¿½
     /// </summary>
     /// <param name="amount"></param>
     public void TakeDamage(int amount)
@@ -33,7 +43,8 @@ public class EnemyHealth : MonoBehaviour
         if (isDying) return;
         if (currentHp <= 0) return;
 
-        currentHp = Mathf.Max(0, currentHp-amount); //0¹Ì¸¸¹æÁö
+        currentHp = Mathf.Max(0, currentHp - amount); //0ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½
+        UpdateHpText();
         Debug.Log($"[EnemyHealth] {name} HP : {currentHp}/{maxHp}");
 
         if (currentHp == 0)
@@ -41,20 +52,20 @@ public class EnemyHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// Á×´ÂÁßÀÌ¸é return
-    /// ¾Æ´Ï¸é Á×´Â object  pathfollowe °¡Á®¿Í¼­ ÇØ´ç Script ºñÈ°¼ºÈ­
-    /// DieRoutine() È£Ãâ
+    /// ï¿½×´ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ return
+    /// ï¿½Æ´Ï¸ï¿½ ï¿½×´ï¿½ object  pathfollowe ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½Ø´ï¿½ Script ï¿½ï¿½È°ï¿½ï¿½È­
+    /// DieRoutine() È£ï¿½ï¿½
     /// </summary>
     private void Die()
     {
-        if (isDying) return; //Á×´Â°Í Áßº¹¹æÁö
+        if (isDying) return; //ï¿½×´Â°ï¿½ ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½
         isDying = true;
 
         Debug.Log($"[EnemyHealth] {name} Dead");
 
         if(disableMoveMentOnDeath)
         {
-            //Enemypathfollowes¸¦ ¸ØÃß¸é "¾²·¯Áö´Â µ¿¾È" ÀÌµ¿ÇÏÁö ¾ÊÀ½
+            //Enemypathfollowesï¿½ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½" ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             EnemyPathFollowes follow = GetComponentInChildren<EnemyPathFollowes>();
             if (follow != null) follow.enabled = false;
         }
@@ -63,31 +74,41 @@ public class EnemyHealth : MonoBehaviour
     }
 
     /// <summary>
-    /// È£ÃâµÇ¸é Å©±â¿Í Rot °¡Á®¿À±â
-    /// Á×´Âµ¿¾È ÄÝ¶óÀÌ´õ ¹«½Ã
-    /// ½Ã°£¿¡ ¸Â°Ô Å©±â°¡ÁÙ¾îµé¸é¼­ zÃà¹æÇâÀ¸·Î µ¹¾Æ°¡¸é¼­(clamp01) ÁøÇà
-    /// ³¡³ª¸é ÇØ´ç¿ÀºêÁ§Æ® Á¦°Å
+    /// È£ï¿½ï¿½Ç¸ï¿½ Å©ï¿½ï¿½ï¿½ Rot ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½×´Âµï¿½ï¿½ï¿½ ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Â°ï¿½ Å©ï¿½â°¡ï¿½Ù¾ï¿½ï¿½é¼­ zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½é¼­(clamp01) ï¿½ï¿½ï¿½ï¿½
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <returns></returns>
     private IEnumerator DieRoutine()
     {
+        if (DeathSfx != null)
+        {
+            if (DeathAudioSource != null)
+            {
+                DeathAudioSource.PlayOneShot(DeathSfx, DeathSoundVolume);
+            }
+            else
+            {
+                AudioSource.PlayClipAtPoint(DeathSfx, transform.position, DeathSoundVolume);
+            }
+        }
         float t = 0f;
-
         Vector3 startScale = transform.localScale;
         Vector3 endScale = startScale * ShrinkScale;
 
-        Quaternion startRot =  transform.rotation;
-        //¿·À¸·Î ³Ñ¾îÁö°Ô: ·ÎÄÃ Ãà ±âÁØÀ¸·Î zÃàÀ¸·Î ±â¿ïÀÌ±â
+        Quaternion startRot = transform.rotation;
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ì±ï¿½
         Quaternion endRot = startRot * Quaternion.Euler(0f, 0f, tiltAngle);
 
-        //Á×´Âµ¿¾È ÄÝ¶óÀÌ´õ ¹«½Ã
+        //ï¿½×´Âµï¿½ï¿½ï¿½ ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½
         Collider col = GetComponentInChildren<Collider>();
         if (col != null) col.enabled = false;
 
         while (t < deathDuration)
         {
             t += Time.deltaTime;
-            float a = Mathf.Clamp01(t / deathDuration); //ÆÛ¼¾Æ® ºñÀ²¾²±âÀ§ÇØ »ç¿ë
+            float a = Mathf.Clamp01(t / deathDuration); //ï¿½Û¼ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 
             transform.rotation = Quaternion.Slerp(startRot, endRot, a);
             transform.localScale = Vector3.Lerp(startScale, endScale, a);
@@ -97,5 +118,11 @@ public class EnemyHealth : MonoBehaviour
 
         Destroy(gameObject);
 
+    }
+    
+    private void UpdateHpText()
+    {
+        if (hpText == null) return;
+        hpText.text = $"{currentHp}/{maxHp}";
     }
 }
